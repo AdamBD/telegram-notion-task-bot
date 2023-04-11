@@ -1,45 +1,44 @@
-const TelegramBot = require("node-telegram-bot-api");
+// Import required modules
+const { Client } = require("@notionhq/client");
 
-// replace the value below with the Telegram token you receive from @BotFather
-const token = "1793527718:AAFxYwVXfEBvx5dAPzkLwoF2HKNxP4zgmN0";
-
-// Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, {
-  polling: true,
+// Initialize the Notion client
+const notion = new Client({
+  auth: process.env.NOTION_SECRET,
 });
 
-// Matches "/echo [whatever]"
-bot.onText(/\/echo (.+)/, (msg, match) => {
-  // 'msg' is the received Message from Telegram
-  // 'match' is the result of executing the regexp above on the text content
-  // of the message
+// Define the database ID
+const DATABASE_ID = process.env.NOTION_DATABASE_ID;
 
-  const chatId = msg.chat.id;
-  const resp = match[1]; // the captured "whatever"
+// Define the serverless function
+module.exports = async (req, res) => {
+  // Check if the request method is POST
+  if (req.method !== 'POST') {
+    res.status(405).send('Method Not Allowed');
+    return;
+  }
 
-  // send back the matched "whatever" to the chat
-  bot.sendMessage(chatId, resp);
-});
+  // Get the incoming message from the request body
+  const msg = req.body.message;
 
-// Listen for any kind of message. There are different kinds of
-// messages.
-bot.on("message", (msg) => {
-  // send a message to the chat acknowledging receipt of their message
+  // Check if the message is valid
+  if (!msg || !msg.text) {
+    res.status(400).send('Bad Request');
+    return;
+  }
 
-  bot.sendMessage(msg.chat.id, "Received your message");
+  // Check if the message starts with "/echo"
+  if (msg.text.startsWith('/echo')) {
+    const resp = msg.text.slice(6); // Extract the text after "/echo "
+    res.json({ method: 'sendMessage', chat_id: msg.chat.id, text: resp });
+    return;
+  }
 
-  const { Client } = require("@notionhq/client");
-
-  const notion = new Client({
-    auth: process.env.secret,
-  });
-
-  console.log("Made it here");
-  (async () => {
-    const response = await notion.pages.create({
+  // Add the message to the Notion database
+  try {
+    await notion.pages.create({
       parent: {
         type: "database_id",
-        database_id: "c7157abe0cf949d7a19cb9e7dd5f35d5",
+        database_id: DATABASE_ID,
       },
       properties: {
         Name: {
@@ -53,6 +52,10 @@ bot.on("message", (msg) => {
         },
       },
     });
-    console.log(response);
-  })();
-});
+    res.json({ method: 'sendMessage', chat_id: msg.chat.id, text: 'Received your message' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
