@@ -67,13 +67,9 @@ module.exports = async (req, res) => {
 					],
 				},
 				Type: {
-					rich_text: [
-						{
-							text: {
-								content: type,
-							},
-						},
-					],
+					select: {
+						name: type,
+					},
 				},
 			},
 		});
