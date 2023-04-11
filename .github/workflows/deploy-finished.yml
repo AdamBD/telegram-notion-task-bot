@@ -10,6 +10,6 @@ jobs:
     steps:
     - name: Notify Telegram
       run: |
-        curl -X POST "https://api.telegram.org/bot${{ 6220773573:AAFgZyQIzZoHTvOM028PHgpn47rc0kUv4rI }}/sendMessage" \
-        -d chat_id=${{ 550102194 }} \
+        curl -X POST "https://api.telegram.org/bot${{ '6220773573:AAFgZyQIzZoHTvOM028PHgpn47rc0kUv4rI' }}/sendMessage" \
+        -d chat_id=${{ '550102194' }} \
         -d text="Deployment finished successfully on Vercel."
