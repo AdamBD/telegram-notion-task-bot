@@ -1,0 +1,16 @@
+{
+  "name": "telegram-bot-notion-tasklist",
+  "version": "1.0.0",
+  "description": "This bot receives chat messages and then sends them to a notion database as tasks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@notionhq/client": "^2.2.2",
+    "node-telegram-bot-api": "^0.60.0"
+  }
+}
