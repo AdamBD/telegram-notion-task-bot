@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
 
 	// Check if the message is valid
 	if (!msg || !msg.text) {
-		res.status(400).send('Bad Request');
+		res.status(400).send(req.body.message);
 		return;
 	}
 
