@@ -13,7 +13,7 @@ const DATABASE_ID = process.env.NOTION_DATABASE_ID;
 module.exports = async (req, res) => {
 	// Check if the request method is POST
 	if (req.method !== 'POST') {
-		res.status(405).send('Method Not Allowed');
+		res.status(200).send('Method Not Allowed');
 		return;
 	}
 
@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
 	// Check if the message is valid
 	if (!msg || !msg.text) {
 		console.log(req.body.message);
-		res.status(400).send(req.body.message);
+		res.status(200).send(req.body.message);
 		return;
 	}
 
