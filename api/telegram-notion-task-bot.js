@@ -77,7 +77,7 @@ module.exports = async (req, res) => {
 		res.json({ method: 'sendMessage', chat_id: msg.chat.id, text: 'Received your message' });
 	} catch (error) {
 		console.error(error);
-		res.status(500).send('Internal Server Error');
+		res.status(200).send('This message was too long. Shorten it and send again.');
 	}
 };
 
